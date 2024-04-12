@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { View, StyleSheet, Alert, Image, Text } from "react-native";
 import OutlinedButton from "../ui/OutlinedButton";
 import { Colors } from "../../constants/colors";
@@ -8,24 +8,37 @@ import {
   PermissionStatus,
 } from "expo-location";
 import { getMapPreview } from "../../util/location";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 
 const LocationPicker = () => {
-  const [locationPermissionInformation, requestPermission] =
-    useForegroundPermissions();
+  const [locationPermission, requestPermission] = useForegroundPermissions();
   const [pickedLocation, setPickedLocation] = useState();
+
+  const route = useRoute();
   const navigation = useNavigation();
 
+  const mapPickedLocation = useCallback(
+    route.params && {
+      lat: route.params.pickedLat,
+      lng: route.params.pickedLng,
+    },
+    [route.params]
+  );
+
+  useEffect(() => {
+    if (mapPickedLocation) {
+      setPickedLocation(mapPickedLocation);
+    }
+  }, [mapPickedLocation]);
+
   const verifyPermissions = async () => {
-    if (
-      locationPermissionInformation.status === PermissionStatus.UNDETERMINED
-    ) {
+    if (locationPermission.status === PermissionStatus.UNDETERMINED) {
       const permissionResponse = await requestPermission();
       console.log(permissionResponse.canAskAgain);
       return permissionResponse.granted;
     }
 
-    if (locationPermissionInformation.status === PermissionStatus.DENIED) {
+    if (locationPermission.status === PermissionStatus.DENIED) {
       Alert.alert(
         "Insufficient permissions",
         "You need to grant location permissions to use this app."
