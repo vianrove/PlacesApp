@@ -7,15 +7,35 @@ import {
   useForegroundPermissions,
   PermissionStatus,
 } from "expo-location";
-import { getMapPreview } from "../../util/location";
+import { getAddress, getMapPreview } from "../../util/location";
 import { useNavigation, useRoute } from "@react-navigation/native";
 
-const LocationPicker = () => {
+const LocationPicker = ({ onPickLocation }) => {
   const [locationPermission, requestPermission] = useForegroundPermissions();
   const [pickedLocation, setPickedLocation] = useState();
 
   const route = useRoute();
   const navigation = useNavigation();
+
+  const verifyPermissions = async () => {
+    if (locationPermission.status === PermissionStatus.UNDETERMINED) {
+      const permissionResponse = await requestPermission();
+      return permissionResponse.granted;
+    }
+
+    if (locationPermission.status === PermissionStatus.DENIED) {
+      const permissionResponse = await requestPermission();
+      if (!permissionResponse.canAskAgain) {
+        Alert.alert(
+          "Insufficient permissions",
+          "You need to grant location permissions to use this app."
+        );
+        return false;
+      }
+      return permissionResponse.granted;
+    }
+    return true;
+  };
 
   const mapPickedLocation = useCallback(
     route.params && {
@@ -31,22 +51,18 @@ const LocationPicker = () => {
     }
   }, [mapPickedLocation]);
 
-  const verifyPermissions = async () => {
-    if (locationPermission.status === PermissionStatus.UNDETERMINED) {
-      const permissionResponse = await requestPermission();
-      console.log(permissionResponse.canAskAgain);
-      return permissionResponse.granted;
-    }
-
-    if (locationPermission.status === PermissionStatus.DENIED) {
-      Alert.alert(
-        "Insufficient permissions",
-        "You need to grant location permissions to use this app."
-      );
-      return false;
-    }
-    return true;
-  };
+  useEffect(() => {
+    const handleLocation = async () => {
+      if (pickedLocation) {
+        const address = await getAddress(
+          pickedLocation.lat,
+          pickedLocation.lng
+        );
+        onPickLocation({ ...pickedLocation, address: address });
+      }
+    };
+    handleLocation();
+  }, [pickedLocation, onPickLocation]);
 
   const getLocationHandler = async () => {
     const hasPermission = await verifyPermissions();

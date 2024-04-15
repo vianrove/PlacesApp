@@ -8,7 +8,7 @@ import { useState } from "react";
 import { Colors } from "../../constants/colors";
 import OutlinedButton from "../ui/OutlinedButton";
 
-const ImagePicker = () => {
+const ImagePicker = ({ onTakeImage }) => {
   const [pickedImage, setPickedImage] = useState();
   const [status, requestPermission] = useCameraPermissions();
 
@@ -19,11 +19,15 @@ const ImagePicker = () => {
     }
 
     if (status.status === PermissionStatus.DENIED) {
-      Alert.alert(
-        "Insufficient permissions",
-        "You need to grand camera permissions to use this app."
-      );
-      return false;
+      const permissionResponse = await requestPermission();
+      if (!permissionResponse.canAskAgain) {
+        Alert.alert(
+          "Insufficient permissions",
+          "You need to grant camera permissions to use this app."
+        );
+        return false;
+      }
+      return permissionResponse.granted;
     }
     return true;
   };
@@ -41,6 +45,7 @@ const ImagePicker = () => {
       quality: 0.5,
     });
     setPickedImage(image.assets[0].uri);
+    onTakeImage(image.assets[0].uri);
   };
 
   let imagePreview = <Text>No image taken yet.</Text>;
@@ -51,10 +56,10 @@ const ImagePicker = () => {
 
   return (
     <View>
-      <View style={styles.imagePreview}>
-        {imagePreview}
-      </View>
-      <OutlinedButton icon="camera" onPress={takeImageHandler} >Take image</OutlinedButton>
+      <View style={styles.imagePreview}>{imagePreview}</View>
+      <OutlinedButton icon="camera" onPress={takeImageHandler}>
+        Take image
+      </OutlinedButton>
     </View>
   );
 };
@@ -74,6 +79,6 @@ const styles = StyleSheet.create({
   },
   image: {
     width: "100%",
-    height: "100%"
-  }
+    height: "100%",
+  },
 });
