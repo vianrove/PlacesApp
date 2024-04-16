@@ -11,17 +11,11 @@ const PlacesList = ({ places }) => {
     );
   }
   return (
-    <>
-      <FlatList
-        data={places}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => {
-          <PlaceItem place={item} />;
-        }}
-      />
-
-      <Text style={styles.fallbackText}>There are no places yet</Text>
-    </>
+    <FlatList
+      data={places}
+      keyExtractor={(item) => item.id}
+      renderItem={({ item }) => <PlaceItem place={item} />}
+    />
   );
 };
 

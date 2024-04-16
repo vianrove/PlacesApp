@@ -1,11 +1,11 @@
 export const Colors = {
-    primary50: '#cfeffd',
-    primary100: '#a0defb',
-    primary200: '#77cff8',
-    primary400: '#44bdf5',
-    primary500: '#1aacf0',
-    primary700: '#0570c9',
-    primary800: '#003b88',
-    accent500: '#e6b30b',
-    gray700: '#221c30',
-  };
+  primary50: "#EFF6F3",
+  primary100: "#E4F1EC",
+  primary200: "#D4EAE2",
+  primary400: "#C3E2D7",
+  primary500: "#A2D3C2",
+  primary700: "#475953",
+  primary800: "#2B3431",
+  accent500: "#f0b095",
+  gray700: "#221c30",
+};

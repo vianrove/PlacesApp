@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 8,
     margin: 4,
-    backgroundColor: Colors.primary800,
+    backgroundColor: Colors.primary500,
     elevation: 2,
     shadowColor: "black",
     shadowOffset: { width: 1, height: 1 },

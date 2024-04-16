@@ -21,13 +21,13 @@ const PlaceForm = ({ onCreatePlace }) => {
     setPickedLocation(location);
   }, []);
   const savePlaceHandler = () => {
-    const placeData = new Place (enteredTitle, selectedImage, pickedLocation);
+    const placeData = new Place(enteredTitle, selectedImage, pickedLocation);
     onCreatePlace(placeData);
   };
 
   return (
     <ScrollView style={styles.form}>
-      <Text style={styles.label}>Input label</Text>
+      <Text style={styles.label}>Place title</Text>
       <TextInput style={styles.input} onChangeText={changeTitleHandler} />
       <ImagePicker onTakeImage={takeImageHandler} />
       <LocationPicker onPickLocation={pickLocationHandler} />
@@ -45,8 +45,9 @@ const styles = StyleSheet.create({
   },
   label: {
     fontWeight: "bold",
+    fontSize: 16,
     marginBottom: 4,
-    color: Colors.primary500,
+    color: Colors.primary800,
   },
   input: {
     marginVertical: 8,
