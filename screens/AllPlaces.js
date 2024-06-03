@@ -1,27 +1,23 @@
 import { useEffect, useState } from "react";
 import PlacesList from "../components/Places/PlacesList";
 import { StyleSheet, View } from "react-native";
-import Button from "../components/ui/Button";
+import { fetchPlaces } from "../util/database";
 
-const AllPlaces = ({ route }) => {
+const AllPlaces = () => {
   const [loadedPlaces, setLoadedPlaces] = useState([]);
 
   // useEffect hook to handle updates when route params change
   useEffect(() => {
-    if (route.params && route.params.place) {
-      // Update loadedPlaces only when a new place is passed via route params
-      setLoadedPlaces((prevPlaces) => [...prevPlaces, route.params.place]);
+    async function loadPlaces() {
+      const places = await fetchPlaces();
+      setLoadedPlaces(places);
     }
-  }, [route.params]);
-
-  const showPlaces = () => {
-    console.log(loadedPlaces);
-  };
+    loadPlaces();
+  }, []);
 
   return (
     <View style={styles.container}>
       <PlacesList places={loadedPlaces} />
-      <Button onPress={showPlaces}>Show Places</Button>
     </View>
   );
 };
