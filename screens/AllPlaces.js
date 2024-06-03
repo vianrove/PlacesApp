@@ -6,7 +6,6 @@ import { fetchPlaces } from "../util/database";
 const AllPlaces = () => {
   const [loadedPlaces, setLoadedPlaces] = useState([]);
 
-  // useEffect hook to handle updates when route params change
   useEffect(() => {
     async function loadPlaces() {
       const places = await fetchPlaces();
